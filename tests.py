@@ -15,11 +15,12 @@ class NaiveLexerTest(unittest.TestCase):
     def test_identifier(self):
         lexer = naivelexer.NaiveLexer()
         self.assertEqual([('IDENTIFIER', 'age')], lexer.tokenize('age'))
+        self.assertEqual([('IDENTIFIER', 'age_limit')], lexer.tokenize('age_limit'))
 
     def test_constant(self):
         lexer = naivelexer.NaiveLexer()
         self.assertEqual([('CONSTANT', 'MAX')], lexer.tokenize('MAX'))
-        self.assertEqual([('CONSTANT', 'Name')], lexer.tokenize('Name'))
+        self.assertEqual([('CONSTANT', 'MAX_NUM')], lexer.tokenize('MAX_NUM'))
 
     def test_operator(self):
         lexer = naivelexer.NaiveLexer()

@@ -15,7 +15,7 @@ class TokenMatcher(object):
         return self.result
 
 
-class NaiveLexer:
+class NaiveLexer(object):
 
     KEYWORDS = ['def', 'class', 'if', 'else', 'True', 'False', 'None']
 
@@ -30,7 +30,7 @@ class NaiveLexer:
         while code_cursor < len(code):
             chunk = code[code_cursor:]
 
-            if matcher.check('^([a-z]\w*)', chunk):
+            if matcher.check(r'^(\b[a-z_]+\b)', chunk):
                 identifier = matcher.result.group()
                 if identifier in NaiveLexer.KEYWORDS:
                     tokens.append((identifier.upper(), identifier))
@@ -38,22 +38,22 @@ class NaiveLexer:
                     tokens.append(('IDENTIFIER', identifier))
                 code_cursor += len(identifier)
 
-            elif matcher.check('^([A-Z]\w*)', chunk):
+            elif matcher.check(r'^(\b[A-Z][A-Z0-9_]+\b)', chunk):
                 constant = matcher.result.group()
                 tokens.append(('CONSTANT', constant))
                 code_cursor += len(constant)
 
-            elif matcher.check('^(\d+)', chunk):
+            elif matcher.check(r'^(\d+)', chunk):
                 number = matcher.result.group()
                 tokens.append(('NUMBER', int(number)))
                 code_cursor += len(number)
 
-            elif matcher.check('^"(.*?)"', chunk):
+            elif matcher.check(r'^"(.*?)"', chunk):
                 string = matcher.result.group(1)
                 tokens.append(('STRING', string))
                 code_cursor += len(string) + 2
 
-            elif matcher.check('^\:\n( +)', chunk):
+            elif matcher.check(r'^\:\n( +)', chunk):
                 indent = len(matcher.result.group(1))
                 if indent <= current_indent:
                     raise Exception("Bad Indent: got %s instead of > %s" % (
@@ -63,7 +63,7 @@ class NaiveLexer:
                 tokens.append(('INDENT', indent))
                 code_cursor += indent + 2
 
-            elif matcher.check('^\n( *)', chunk):
+            elif matcher.check(r'^\n( *)', chunk):
                 indent = len(matcher.result.group(1))
                 if indent == current_indent:
                     tokens.append(('NEWLINE', "\n"))
@@ -81,7 +81,7 @@ class NaiveLexer:
                     raise Exception("Cannot indent without code block")
                 code_cursor += indent + 1
 
-            elif matcher.check('^(\|\||&&|==|!=|<=|>=)', chunk):
+            elif matcher.check(r'^(\|\||&&|==|!=|<=|>=)', chunk):
                 operator = matcher.result.group()
                 tokens.append((operator, operator))
                 code_cursor += len(operator)
