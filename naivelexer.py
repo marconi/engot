@@ -17,7 +17,7 @@ class TokenMatcher(object):
 
 class NaiveLexer(object):
 
-    KEYWORDS = ['def', 'class', 'if', 'else', 'True', 'False', 'None']
+    KEYWORDS = ['if', 'else', 'True', 'False', 'None']
 
     def tokenize(self, code):
         code = code.strip()
